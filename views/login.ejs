@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        div{
+            color: red;
+            height: 50px;
+            background-color: rgba(255, 0, 0, 0.2);
+            width: 100%;
+            text-align: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            /* align-items: center; */
+            justify-content: center;
+            margin: auto;
+            height: fit-content;
+            padding: 25px 10px 0 10px;
+            background-color: black;
+        }
+        input{
+            height: 25px;
+            width: 98%;
+            /* align-self: flex-start; */
+        }
+        label{
+            color: white;
+            font-size: 20px;
+            /* align-self: flex-start; */
+        }
+        button{
+            width: 25%;
+            background-color: rebeccapurple;
+            margin: 20px auto;
+            height: 40px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            font-size: 25px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <% if (errormessage) { %>
+        <div><%= errormessage %></div>
+    <% } %>
+
+    <form action="/signin" method="post">
+        <label for="email">Email or Username:</label>
+        <input type="email" id="email" name="email" required>
+          
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
