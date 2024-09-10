@@ -7,6 +7,7 @@ app.set("view engine", "ejs")
 app.use(express.urlencoded({extended:true}))
 
 let userarray = []
+let todoarray = []
 let errormssg
 let errormessage
 
@@ -30,6 +31,14 @@ app.get('/signup',(request, response)=>{
     response.render('signup', {errormssg})
 })
 
+app.get('/login',(request, response)=>{
+    response.render('login', {errormessage})
+})
+
+app.get("/todo", (req,res)=>{
+    res.render("todolist", {todoarray})
+})
+
 app.post('/register',(req,res)=>{
     console.log(req.body);
     let existuser = userarray.find((user)=> user.email === req.body.email)
@@ -44,9 +53,7 @@ app.post('/register',(req,res)=>{
     }
 })
 
-app.get('/login',(request, response)=>{
-    response.render('login', {errormessage})
-})
+
 
 app.post('/signin',(req,res)=>{
     let confirmuser = userarray.find((individual)=> individual.email === req.body.email && individual.password === req.body.password)
@@ -58,6 +65,19 @@ app.post('/signin',(req,res)=>{
         res.redirect('/login')
     }
 })
+
+app.post("/addtodo",(req,res)=>{
+    console.log(req.body);
+    todoarray.push(req.body)
+    console.log(todoarray);
+    res.redirect('/todo')
+})
+
+
+
+
+
+
 
 
 const port = 9005;
