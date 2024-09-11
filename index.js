@@ -67,12 +67,38 @@ app.post('/signin',(req,res)=>{
 })
 
 app.post("/addtodo",(req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     todoarray.push(req.body)
     console.log(todoarray);
     res.redirect('/todo')
 })
 
+
+app.get("/edit/:index",(req, res)=>{
+    console.log(req.params);
+    const{ index } = req.params
+    console.log(index);
+    let editTodo = todoarray[index]
+    response.render("edit", {editTodo , index})
+})
+
+app.post("/editted/:index",(req , res)=>{
+    console.log(req.body);
+    const { index } = req.params
+    let change = req.body
+    todoarray[index] = change
+    response.redirect("/todo")
+    
+})
+
+app.post("/delete",(req, res)=>{
+    console.log(req.params);
+    let index = req.params.index
+    console.log(index);
+    todoarray.splice(index,1)
+    console.log(req.params);
+    response.redirect("/todo")
+})
 
 
 
