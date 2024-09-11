@@ -11,19 +11,21 @@
     <form class="w-50 mx-auto px-3 py-3 shadow" action="/addtodo" method="post">
         <input class="form-control mt-3" name="title" type="text" placeholder="Title">
         <input class="form-control mt-3" name="content" type="text" placeholder="Content">
-        <button class="btn btn-green mt-3" type="submit">Add Todo</button>
+        <button class="btn btn-success mt-3" type="submit">Add Todo</button>
     </form>
 
-    <% todoarray.forEach(element => { %>
+    <% todoarray.forEach((element , i) => { %>
      <p class="mt-3">Title: <%= element.title %></p>
      <p>Content: <%= element.content %></p>
-     <form action="/edit/<%= index %>" method="get">
-        <button class="btn btn-primary">Edit</button>  
-    </form>
-     <form action="/delete" method="post">
-        <button class="btn btn-danger mt-3">Delete</button>  
-        <input type="text" hidden value="<%= index %>">
-    </form>
+    <div class="d-flex">
+        <form action="/edit/<%= i %>" method="get">
+            <button class="btn btn-primary">Edit</button>  
+        </form>
+         <form action="/delete" method="post">
+            <button class="btn btn-danger mt-3">Delete</button>  
+            <input type="text" hidden value="<%= i %>">
+        </form>
+    </div>
     <% }) %>
 </body>
 </html>
