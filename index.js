@@ -81,6 +81,7 @@ app.post('/signin', async(req,res)=>{
     const confirmuser = await usermodel.findOne({ email: req.body.email });
     if (!confirmuser) {
       console.log("you are not a registered user ; please sign up");
+      errormessage = 'Invalid email'
       res.redirect("/login");
     } else {
       if (confirmuser.password == req.body.password) {
@@ -89,7 +90,7 @@ app.post('/signin', async(req,res)=>{
         res.redirect("/");
       } else {
         console.log("invalid password");
-        errormessage = 'Invalid email or password'
+        errormessage = 'Invalid password'
         res.redirect("/login");
       }
     }
