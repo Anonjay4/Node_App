@@ -76,15 +76,35 @@ app.post('/register', async(req,res)=>{
 })
 
 
-app.post('/signin',(req,res)=>{
-    let confirmuser = userarray.find((individual)=> individual.email === req.body.email && individual.password === req.body.password)
-    if (confirmuser) {
-        res.redirect('/')
+app.post('/signin', async(req,res)=>{
+    try {
+    const confirmuser = await usermodel.findOne({ email: req.body.email });
+    if (!confirmuser) {
+      console.log("you are not a registered user ; please sign up");
+      res.redirect("/login");
+    } else {
+      if (confirmuser.password == req.body.password) {
+        console.log("login successful");
         errormessage = ''
-    }else{
+        res.redirect("/");
+      } else {
+        console.log("invalid password");
         errormessage = 'Invalid email or password'
-        res.redirect('/login')
+        res.redirect("/login");
+      }
     }
+  } catch (error) {
+    console.log(error);
+    res.redirect("/login");
+  }
+    // let confirmuser = userarray.find((individual)=> individual.email === req.body.email && individual.password === req.body.password)
+    // if (confirmuser) {
+    //     res.redirect('/')
+    //     errormessage = ''
+    // }else{
+    //     errormessage = 'Invalid email or password'
+    //     res.redirect('/login')
+    // }
 })
 
 app.post("/addtodo",(req,res)=>{
