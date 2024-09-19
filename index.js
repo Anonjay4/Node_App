@@ -13,17 +13,17 @@ let errormssg
 let errormessage
 
 const userSchema = mongoose.Schema({
-    fullname:{type:String},
-    username:{type:String},
-    email:{type:String},
-    password:{type:Number},
-    confirmpassword:{type:Number},
+    fullname:{type:String, trim:true, required:true},
+    username:{type:String, trim:true, required:true},
+    email:{type:String, trim:true, required:true, unique:true},
+    password:{type:Number, trim:true, required:true},
+    confirmpassword:{type:Number, trim:true, required:true},
 })
 
 const usermodel = mongoose.model("user_collection", userSchema)
 
 
-app.get('/',(request, response)=>{
+app.get('/dashboard',(request, response)=>{
     // response.send([
     //     {name:"jide", food:"noodles"},
     //     {name:"jomiloju", food:"rice"},
@@ -39,7 +39,7 @@ app.get('/',(request, response)=>{
 
 });
 
-app.get('/signup',(request, response)=>{
+app.get('/',(request, response)=>{
     response.render('signup', {errormssg})
 })
 
@@ -52,13 +52,15 @@ app.get("/todo", (req,res)=>{
 })
 
 app.post('/register', async(req,res)=>{
-    try {
         console.log(req.body);
+    try {
     const createuser = await usermodel.create(req.body);
     if (createuser) {
         console.log("user created successfully");
+        res.redirect('/login')
     }else {
         console.log('unable to create user');
+        res.redirect('/')
     }
     } catch (error) {
         console.log(error);
@@ -66,7 +68,7 @@ app.post('/register', async(req,res)=>{
     // let existuser = userarray.find((user)=> user.email === req.body.email)
     // if(existuser){
     //     errormssg = 'user already exists'
-    //     res.redirect("/signup")
+    //     res.redirect("/")
     // }else{
     //     errormssg = ''
     //     userarray.push(req.body)
@@ -77,30 +79,48 @@ app.post('/register', async(req,res)=>{
 
 
 app.post('/signin', async(req,res)=>{
+//     try {
+//     const confirmuser = await usermodel.findOne({ email: req.body.email });
+//     if (!confirmuser) {
+//       console.log("Invalid email please sign up");
+//       errormessage = 'Invalid email'
+//       res.redirect("/login");
+//     } else {
+//       if (confirmuser.password == req.body.password) {
+//         console.log("login successful");
+//         errormessage = ''
+//         res.redirect("/todo");
+//       } else {
+//         console.log("Invalid password");
+//         errormessage = 'Invalid password'
+//         res.redirect("/login");
+//       }
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.redirect("/login");
+//   }
+
+
+    const {email , password} = req.body 
     try {
-    const confirmuser = await usermodel.findOne({ email: req.body.email });
-    if (!confirmuser) {
-      console.log("you are not a registered user ; please sign up");
-      errormessage = 'Invalid email'
-      res.redirect("/login");
-    } else {
-      if (confirmuser.password == req.body.password) {
-        console.log("login successful");
-        errormessage = ''
-        res.redirect("/");
-      } else {
-        console.log("invalid password");
-        errormessage = 'Invalid password'
-        res.redirect("/login");
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    res.redirect("/login");
-  }
+        const existuser = await usermodel.findOne({email:email})
+        console.log(existuser);
+        if (existuser && existuser.password == password) {
+            console.log("login successful");
+            res.redirect("/todo")
+        } else {
+            console.log("invalid user");
+            res.redirect("/login")
+        }
+    } catch (error) {
+        console.log(error);
+        res.redirect("/login")
+    }   
+
     // let confirmuser = userarray.find((individual)=> individual.email === req.body.email && individual.password === req.body.password)
     // if (confirmuser) {
-    //     res.redirect('/')
+    //     res.redirect('/dashboard')
     //     errormessage = ''
     // }else{
     //     errormessage = 'Invalid email or password'
