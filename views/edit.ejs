@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/editted/<%= i %>" method="post">
+    <form action="/editted/<%= editTodo._id %>" method="post">
         <input type="text" name="title" value="<%= editTodo.title %>" class="form-control mt-3">
         <input type="text" name="content" value="<%= editTodo.content %>" class="form-control mt-3">
         <button type="submit" class="btn btn-success mt-3">Save Changes</button>

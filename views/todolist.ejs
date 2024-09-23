@@ -13,15 +13,18 @@
         <input class="form-control mt-3" name="content" type="text" placeholder="Content">
         <button class="btn btn-success mt-3" type="submit">Add Todo</button>
     </form>
+    <%- console.log(displayTodo);
+     %>
 
-    <% todoarray.forEach((element , i) => { %>
+    <% displayTodo.forEach((element , i) => { %>
      <p class="mt-3">Title: <%= element.title %></p>
      <p>Content: <%= element.content %></p>
     <div class="d-flex">
-        <form action="/edit/<%= i %>" method="get">
+        <form action="/edit/<%= element._id  %>" method="get">
             <button class="btn btn-primary">Edit</button>  
+            
         </form>
-         <form action="/delete" method="post">
+         <form action="/delete/<%= element._id  %>" method="post">
             <button class="btn btn-danger mt-3">Delete</button>  
             <input type="text" hidden value="<%= i %>">
         </form>

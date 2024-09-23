@@ -9,6 +9,7 @@ app.set("view engine", "ejs")
 
 let userarray = []
 let todoarray = []
+let displayTodo = []
 let errormssg
 let errormessage
 
@@ -22,7 +23,12 @@ const userSchema = mongoose.Schema({
 
 const usermodel = mongoose.model("user_collection", userSchema)
 
+const todoSchema = mongoose.Schema({
+    title:{type:String, trim:true, required:true},
+    content:{type:String, trim:true, required:true}
+},{timestamps:true})
 
+const todomodel = mongoose.model("todo-collection", todoSchema)
 app.get('/dashboard',(request, response)=>{
     // response.send([
     //     {name:"jide", food:"noodles"},
@@ -47,8 +53,10 @@ app.get('/login',(request, response)=>{
     response.render('login', {errormessage})
 })
 
-app.get("/todo", (req,res)=>{
-    res.render("todolist", {todoarray})
+app.get("/todo", async (req,res)=>{
+    const displayTodo = await todomodel.find()
+    console.log(displayTodo);
+    res.render("todolist", {displayTodo})
 })
 
 app.post('/register', async(req,res)=>{
@@ -128,39 +136,93 @@ app.post('/signin', async(req,res)=>{
     // }
 })
 
-app.post("/addtodo",(req,res)=>{
-    // console.log(req.body);
-    todoarray.push(req.body)
-    console.log(todoarray);
-    res.redirect('/todo')
-})
-
-
-app.get("/edit/:i",(req, res)=>{
-    console.log(req.params);
-    const{ i } = req.params
-    console.log(i);
-    let editTodo = todoarray[i]
-    res.render("edit", {editTodo , i})
-})
-
-app.post("/editted/:i",(req , res)=>{
+app.post("/addtodo", async(req,res)=>{
     console.log(req.body);
-    const { i } = req.params
-    let change = req.body
-    todoarray[i] = change
-    res.redirect("/todo")
+    try {
+        const todo = await todomodel.create(req.body)
+    if (todo) {
+        console.log("todo created successfully")
+        res.redirect('/todo')
+    }else{
+        console.log("error creating todo");
+    }
+    } catch (error) {
+        console.log(error);
+    }
     
 })
 
-app.post("/delete",(req, res)=>{
-    console.log(req.params);
-    let i = req.params.i
+app.post("/delete/:i", async(req, res)=>{
+    const {i} = req.params
     console.log(i);
-    todoarray.splice(i,1)
-    console.log(req.params);
+   try {0
+    let deletedproduct = await todomodel.findByIdAndDelete(i)
+   if (deletedproduct) {
+    console.log('deleted successfully');
     res.redirect("/todo")
+   }else{
+    console.log('unable to delete');
+    
+   }
+    
+   } catch (error) {
+    console.log(error);
+    
+   }
+    
+    // const{ i } = req.params
+    // console.log(i);
+    // let editTodo = displayTodo[i]
+    // res.render("edit", {editTodo , i})
 })
+
+app.get("/edit/:i", async(req, res)=>{
+    const { i } = req.params;
+    try {
+        let editTodo = await todomodel.findById(i); // Fetch todo from DB
+        if (editTodo) {
+            res.render("edit", { editTodo }); // Pass the todo item to the EJS template
+        } else {
+            console.log('Todo not found');
+            res.redirect("/todo");
+        }
+    } catch (error) {
+        console.log(error);
+        res.redirect("/todo");
+    }
+});
+
+app.post("/editted/:i", async(req , res)=>{
+    // console.log(req.body);
+    // const { i } = req.params
+    // let change = req.body
+    // displayTodo[i] = change
+    // res.redirect("/todo")
+    const { i } = req.params;
+    const { title, content } = req.body; 
+    try {
+        let updatedproduct = await todomodel.findByIdAndUpdate(i, { title, content }, { new: true });
+        if (updatedproduct) {
+            console.log('Updated successfully');
+            res.redirect("/todo");
+        } else {
+            console.log('Unable to update');
+            res.redirect("/edit/" + i);
+        }
+    } catch (error) {
+        console.log(error);
+        res.redirect("/edit/" + i);
+    }
+})
+
+// app.post("/delete",(req, res)=>{
+//     console.log(req.params);
+//     let i = req.params.i
+//     console.log(i);
+//     displayTodo.splice(i,1)
+//     console.log(req.params);
+//     res.redirect("/todo")
+// })
 
 
 
